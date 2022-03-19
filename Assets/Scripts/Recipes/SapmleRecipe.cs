@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-
 public class SapmleRecipe : RecipeBase
 {
     public override List<StepBase> Steps

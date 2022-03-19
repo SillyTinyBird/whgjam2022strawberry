@@ -6,18 +6,20 @@ public class CookingManager : MonoBehaviour
 {
     // Start is called before the first frame update
     StepBase currentStep;
-    private void Awake()
+    CuttingStep cutting = new CuttingStep();
+    SteeringStep steering = new SteeringStep();
+    public float test = 0.0f;
+    private void Start()
     {
-        
+        currentStep = new EmptyStep();//just to make sure we dont 
     }
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        
+        currentStep.UpdateStep(this);
+    }
+    public void SetCurrentStep(StepBase step)
+    {
+        currentStep = step;
+        currentStep.EnterStep(this);
     }
 }
