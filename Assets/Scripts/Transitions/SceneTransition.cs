@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class SceneTransition : MonoBehaviour
 {
@@ -15,11 +16,10 @@ public class SceneTransition : MonoBehaviour
     [Header("Transition speed (before it loads next level")] [Min(0)]
     [SerializeField] private float transitionSpeed;
 
+
     private void Awake() => StopCoroutine();
     private void OnEnable() => MainMenu.LoadScene += LoadScene;
     private void OnDisable() => MainMenu.LoadScene -= LoadScene;
-
-
     private void LoadScene() => StartCoroutine(LoadLevelCoroutine());
     private void StopCoroutine() => StartCoroutine(StopLoadingCoroutine());
 
@@ -37,7 +37,6 @@ public class SceneTransition : MonoBehaviour
     {
         image.raycastTarget = true;
         Fading.FadeIn(image, fadeSpeed);
-
         yield return new WaitForSeconds(transitionSpeed);
         SceneManager.LoadScene(roomIndex);
     }

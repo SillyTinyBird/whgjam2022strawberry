@@ -6,6 +6,7 @@ public class RecipeManager
 {
     static public int CurentStep;
     static private RecipeBase recipe;
+
     void Start()
     {
         recipe = new SapmleRecipe();
