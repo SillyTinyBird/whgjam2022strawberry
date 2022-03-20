@@ -7,8 +7,6 @@ using UnityEngine.Audio;
 
 public class SceneTransition : MonoBehaviour
 {
-    [Header("Index of the game scene")] [Min(0)]
-    [SerializeField] private int roomIndex;
     [Header("Transition image")]
     [SerializeField] Image image;
     [Header("Fade speed")] [Min(0)]
@@ -18,9 +16,19 @@ public class SceneTransition : MonoBehaviour
 
 
     private void Awake() => StopCoroutine();
-    private void OnEnable() => MainMenu.LoadScene += LoadScene;
-    private void OnDisable() => MainMenu.LoadScene -= LoadScene;
-    private void LoadScene() => StartCoroutine(LoadLevelCoroutine());
+    private void OnEnable() 
+    { 
+        MainMenu.LoadScene += LoadScene;
+        DishButtons.SceneTransition += LoadScene;
+    }
+
+
+    private void OnDisable()
+    {
+        MainMenu.LoadScene -= LoadScene;
+        DishButtons.SceneTransition -= LoadScene;
+    }
+    private void LoadScene(int index) => StartCoroutine(LoadLevelCoroutine(index));
     private void StopCoroutine() => StartCoroutine(StopLoadingCoroutine());
 
     #region IEnumerators
@@ -33,12 +41,12 @@ public class SceneTransition : MonoBehaviour
         image.raycastTarget = false;
     }
 
-    private IEnumerator LoadLevelCoroutine()
+    private IEnumerator LoadLevelCoroutine(int index)
     {
         image.raycastTarget = true;
         Fading.FadeIn(image, fadeSpeed);
         yield return new WaitForSeconds(transitionSpeed);
-        SceneManager.LoadScene(roomIndex);
+        SceneManager.LoadScene(index);
     }
     #endregion
 }

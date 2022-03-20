@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public delegate void OnSceneLoaded();
+    public delegate void OnSceneLoaded(int index);
     /// <summary>  Load the scene (using transitions) </summary>
     public static event OnSceneLoaded LoadScene;
 
@@ -18,8 +18,11 @@ public class MainMenu : MonoBehaviour
     [Header("Audio Mixer")]
     [SerializeField] private AudioMixer audioMixer;
 
+    [Header("Start the game scene index")]
+    [SerializeField] private int roomIndex;
+
     private void Awake() => DisableParts();
-    public void StartGame() => LoadScene();
+    public void StartGame() => LoadScene(roomIndex);
     public void Settings() => settingsMenu.SetActive(true);
     public void Credits() => creditsMenu.SetActive(true);
     public void GoBack() => DisableParts();

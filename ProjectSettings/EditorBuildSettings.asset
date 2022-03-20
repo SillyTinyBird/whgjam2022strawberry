@@ -11,4 +11,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/[1] Choose Dish.unity
     guid: 1dcd31a8d47993045ab645573dcbb97c
+  - enabled: 1
+    path: Assets/Scenes/[2] Party Scene.unity
+    guid: 601b9b6adc02e264b864190adc6e6102
+  - enabled: 1
+    path: Assets/Scenes/DrinksScene.unity
+    guid: fe2ab064e44564f439eb54b002562d59
+  - enabled: 1
+    path: Assets/Scenes/MainCourseScene.unity
+    guid: a4aef7d31405d4747902da1ef16a7608
+  - enabled: 1
+    path: Assets/Scenes/DessertScene.unity
+    guid: 314c3d7c9f1164d4fad10007a5a518ad
   m_configObjects: {}
