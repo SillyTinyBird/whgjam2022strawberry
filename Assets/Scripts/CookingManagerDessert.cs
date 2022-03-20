@@ -26,7 +26,7 @@ public class CookingManagerDessert : MonoBehaviour
     IEnumerator WaitForEvent()
     {
         yield return new WaitUntil(() => eventHappened == true);
-        Debug.Log("Requirements registred");
+        Debug.Log("Requirements registered");
         eventHappened = false;
     }
     void Start()
