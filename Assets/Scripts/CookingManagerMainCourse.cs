@@ -1,9 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
-using System;
 using TMPro;
+using UnityEngine;
 
 
 public class CookingManagerMainCourse : MonoBehaviour
@@ -31,7 +28,6 @@ public class CookingManagerMainCourse : MonoBehaviour
     IEnumerator WaitForEvent()
     {
         yield return new WaitUntil(() => eventHappened == true);
-        Debug.Log("Requirements registred");
         eventHappened = false;
     }
     void Start()
@@ -45,92 +41,92 @@ public class CookingManagerMainCourse : MonoBehaviour
     private IEnumerator RecepieProcessor()
     {
         TMPRecepieInstructions.text = "Start by grabing two slices of bread";
-        while(currentInteracted != "Bread")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Bread");
         //animate bread apearing on working surface
-        while(currentInteracted != "Bread")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Bread");
         //animate bread apearing on working surface
         TMPRecepieInstructions.text = "Use cookie cutter to cut both slices of bread into cat shape";
-        while (currentInteracted != "Cutter")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        doneBread.SetActive(true);
+        } while (currentInteracted != "Cutter");
+        GameEvent.current.EnableRequest("BreadDone");
         //animate cutting with yield or something
         TMPRecepieInstructions.text = "Grab slice of ham";
-        while (currentInteracted != "Ham")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Ham");
         //etc
         TMPRecepieInstructions.text = "Use cookie cutter to cut ham into cat shape";
-        while (currentInteracted != "Cutter")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        doneHam.SetActive(true);
+        } while (currentInteracted != "Cutter");
+        GameEvent.current.EnableRequest("HamDone");
         TMPRecepieInstructions.text = "Grab slice of cheese";
-        while (currentInteracted != "Cheese")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Cheese");
         //etc
         TMPRecepieInstructions.text = "Use cookie cutter to cut cheese into cat shape";
-        while (currentInteracted != "Cutter")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        doneCheese.SetActive(true);
+        } while (currentInteracted != "Cutter");
+        GameEvent.current.EnableRequest("CheeseDone");
         TMPRecepieInstructions.text = "Grab whole cucumber";
-        while (currentInteracted != "Cucumber")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Cucumber");
         //etc
         TMPRecepieInstructions.text = "Cut into round circles";
-        while (currentInteracted != "Knife")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        doneCucumber.SetActive(true); ;
+        } while (currentInteracted != "Knife");
+        GameEvent.current.EnableRequest("CucumberDone");
         TMPRecepieInstructions.text = "Grab knife, click on cream cheese to add it to knifes";
-        while (currentInteracted != "Knife")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Knife");
         //animate knife grabbed
-        while (currentInteracted != "Cream")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Cream");
         //here is spreading cream phase
         TMPRecepieInstructions.text = "Assemble your sandwich in this order; bread, cheese, ham, cucumber, top bread";
-        while (currentInteracted != "BreadDone")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        while (currentInteracted != "CheeseDone")
+        } while (currentInteracted != "BreadDone");
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        while (currentInteracted != "HamDone")
+        } while (currentInteracted != "CheeseDone");
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        while (currentInteracted != "CucumberDone")
+        } while (currentInteracted != "HamDone");
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        while (currentInteracted != "BreadDone")
+        } while (currentInteracted != "CucumberDone");
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        sandwich.SetActive(true);
+        } while (currentInteracted != "BreadDone");
+        GameEvent.current.EnableRequest("Sandwich");
         TMPRecepieInstructions.text = "Your dish is done!";
         Debug.Log("Recepie done!");
     }

@@ -17,4 +17,12 @@ public class GameEvent : MonoBehaviour
             OnIngredientPress(name);
         }
     }
+    public event Action<string> OnEnableRequest;
+    public void EnableRequest(string name)
+    {
+        if (OnEnableRequest != null)
+        {
+            OnEnableRequest(name);
+        }
+    }
 }
