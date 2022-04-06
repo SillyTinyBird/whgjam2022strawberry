@@ -9,9 +9,6 @@ public class CookingManagerDessert : MonoBehaviour
     private string lastInteracted;
     private string currentInteracted;
     bool eventHappened;
-    public GameObject doneBanana;
-    public GameObject onSceneBanana;
-    public GameObject onSceneBananaPeeled;
 
     //Event subscriber that sets the flag
     void OnEvent(string name)
@@ -39,56 +36,66 @@ public class CookingManagerDessert : MonoBehaviour
     private IEnumerator RecepieProcessor()
     {
         TMPRecepieInstructions.text = "Start by grabing banana";
-        while (currentInteracted != "Banana")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        onSceneBanana.SetActive(true);
+        } while (currentInteracted != "Banana");
+        GameEvent.current.EnableRequest("BananaUnPeeled");
         TMPRecepieInstructions.text = "Unpeel the banana (by clicking on it)";
-        while (currentInteracted != "BananaOnScene")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        onSceneBanana.SetActive(false);
-        onSceneBananaPeeled.SetActive(true);
+        } while (currentInteracted != "BananaUnPeeled");
+        GameEvent.current.EnableRequest("BananaUnPeeled");
+        GameEvent.current.EnableRequest("BananaPeeled");
         TMPRecepieInstructions.text = "Push stick into banana";
         while (currentInteracted != "Stick")
         {
             yield return StartCoroutine(WaitForEvent());
         }
-        onSceneBananaPeeled.SetActive(false);
-        doneBanana.SetActive(true);
-        TMPRecepieInstructions.text = "Take caramel squares";
-        while (currentInteracted != "Caramel")
+        GameEvent.current.EnableRequest("BananaPeeled");
+        GameEvent.current.EnableRequest("BananaStickDone");
+        TMPRecepieInstructions.text = "Take caramel squares and put them in the pot to melt";
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        TMPRecepieInstructions.text = "Put in pot and melt the caramel";
-        while (currentInteracted != "Pot")
+        } while (currentInteracted != "Caramel");
+        GameEvent.current.EnableRequest("CaramelOnScene");
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Pot");
+        GameEvent.current.EnableRequest("CaramelOnScene");
+        GameEvent.current.EnableRequest("PotCaramel");
         TMPRecepieInstructions.text = "Put banana in melted caramel";
-        while (currentInteracted != "BananaDone")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-
+        } while (currentInteracted != "BananaStickDone");
+        GameEvent.current.EnableRequest("BananaStickDone");
+        GameEvent.current.EnableRequest("PotCaramel");
+        GameEvent.current.EnableRequest("BananaCaramel");
         TMPRecepieInstructions.text = "Put marshmallow on front of banana";
-        while (currentInteracted != "Marshmallow")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Marshmallow");
+        GameEvent.current.EnableRequest("BananaCaramel");
+        GameEvent.current.EnableRequest("BananaMarshmallow");
         TMPRecepieInstructions.text = "Put oreos on sides of banana";
-        while (currentInteracted != "Oreos")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Oreos");
+        GameEvent.current.EnableRequest("BananaMarshmallow");
+        GameEvent.current.EnableRequest("BananaOreo");
         TMPRecepieInstructions.text = "Draw monkey face on banana with icing";
-        while (currentInteracted != "Icing")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Icing");
+        GameEvent.current.EnableRequest("BananaOreo");
+        GameEvent.current.EnableRequest("Monkey");
         TMPRecepieInstructions.text = "Your dish is done!";
         Debug.Log("Recepie done!");
     }

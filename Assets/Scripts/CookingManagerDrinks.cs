@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class CookingManagerDrinks : MonoBehaviour
 {
@@ -9,7 +8,6 @@ public class CookingManagerDrinks : MonoBehaviour
     private string lastInteracted;
     private string currentInteracted;
     bool eventHappened;
-    public GameObject doneSoda;
 
     //Event subscriber that sets the flag
     void OnEvent(string name)
@@ -37,42 +35,93 @@ public class CookingManagerDrinks : MonoBehaviour
     private IEnumerator RecepieProcessor()
     {
         TMPRecepieInstructions.text = "Start by pouring the soda into a bowl";
-        while (currentInteracted != "Soda")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Soda");
+        do
+        {
+            yield return StartCoroutine(WaitForEvent());
+        } while (currentInteracted != "BowlEmpty");
+        GameEvent.current.EnableRequest("BowlSoda");
+        GameEvent.current.EnableRequest("BowlEmpty");
         TMPRecepieInstructions.text = "Dye the soda blue";
-        while (currentInteracted != "BlueDye")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        doneSoda.SetActive(true);
+        } while (currentInteracted != "BlueDye");
+        GameEvent.current.EnableRequest("BowlSoda");
+        GameEvent.current.EnableRequest("BowlDyedSoda");
         //set aside
-        TMPRecepieInstructions.text = "Add rock-shaped candy";
-        while (currentInteracted != "RockCandy")
+        TMPRecepieInstructions.text = "Add rock-shaped candy to the turtle bowl";
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "RockCandy");
+        do
+        {
+            yield return StartCoroutine(WaitForEvent());
+        } while (currentInteracted != "TurtleBowlEmpty");
+        GameEvent.current.EnableRequest("TurtleBowlEmpty");
+        GameEvent.current.EnableRequest("TurtleBowlL1");
+
         TMPRecepieInstructions.text = "Add a layer of ice";
-        while (currentInteracted != "Ice")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Ice");
+        GameEvent.current.EnableRequest("TurtleBowlL1");
+        GameEvent.current.EnableRequest("TurtleBowlL2");
         TMPRecepieInstructions.text = "Add a layer of fish-shaped candy";
-        while (currentInteracted != "FishCandy")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
-        TMPRecepieInstructions.text = "And then another layer of ice";
-        while (currentInteracted != "Ice")
+        } while (currentInteracted != "FishCandy");
+        GameEvent.current.EnableRequest("TurtleBowlL2");
+        GameEvent.current.EnableRequest("TurtleBowlL3");
+
+
+        TMPRecepieInstructions.text = "Alternate between fish-shaped candy and ice until the bowl is full";
+
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "Ice");
+        GameEvent.current.EnableRequest("TurtleBowlL3");
+        GameEvent.current.EnableRequest("TurtleBowlL4");
+        do
+        {
+            yield return StartCoroutine(WaitForEvent());
+        } while (currentInteracted != "FishCandy");
+        GameEvent.current.EnableRequest("TurtleBowlL4");
+        GameEvent.current.EnableRequest("TurtleBowlL5");
+        do
+        {
+            yield return StartCoroutine(WaitForEvent());
+        } while (currentInteracted != "Ice");
+        GameEvent.current.EnableRequest("TurtleBowlL5");
+        GameEvent.current.EnableRequest("TurtleBowlL6");
+        do
+        {
+            yield return StartCoroutine(WaitForEvent());
+        } while (currentInteracted != "FishCandy");
+        GameEvent.current.EnableRequest("TurtleBowlL6");
+        GameEvent.current.EnableRequest("TurtleBowlL7");
+        do
+        {
+            yield return StartCoroutine(WaitForEvent());
+        } while (currentInteracted != "Ice");
+        GameEvent.current.EnableRequest("TurtleBowlL7");
+        GameEvent.current.EnableRequest("TurtleBowlL8");
+
         TMPRecepieInstructions.text = "Finally, pour the dyed soda into the fish bowl";
-        while (currentInteracted != "SodaDone")
+        do
         {
             yield return StartCoroutine(WaitForEvent());
-        }
+        } while (currentInteracted != "BowlDyedSoda");
+        GameEvent.current.EnableRequest("BowlDyedSoda");
+        GameEvent.current.EnableRequest("TurtleBowlL8");
+        GameEvent.current.EnableRequest("TurtleBowlFinal");
         TMPRecepieInstructions.text = "Your dish is done!";
         Debug.Log("Recepie done!");
     }
