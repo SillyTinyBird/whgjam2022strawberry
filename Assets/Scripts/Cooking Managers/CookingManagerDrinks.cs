@@ -5,7 +5,6 @@ using UnityEngine;
 public class CookingManagerDrinks : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI TMPRecepieInstructions;
-    private string lastInteracted;
     private string currentInteracted;
     bool eventHappened;
 
@@ -13,23 +12,19 @@ public class CookingManagerDrinks : MonoBehaviour
     void OnEvent(string name)
     {
         eventHappened = true;
-        lastInteracted = currentInteracted;
         currentInteracted = name;
-        Debug.Log(currentInteracted);
     }
 
     //Coroutine that waits until the flag is set
     IEnumerator WaitForEvent()
     {
         yield return new WaitUntil(() => eventHappened == true);
-        Debug.Log("Requirements registred");
         eventHappened = false;
     }
     void Start()
     {
         GameEvent.current.OnIngredientPress += OnEvent;
         StartCoroutine("RecepieProcessor");
-        //stepRequirements.Add(
     }
     //steps
     private IEnumerator RecepieProcessor()
@@ -51,6 +46,12 @@ public class CookingManagerDrinks : MonoBehaviour
             yield return StartCoroutine(WaitForEvent());
         } while (currentInteracted != "BlueDye");
         GameEvent.current.EnableRequest("BowlSoda");
+        GameEvent.current.EnableRequest("Stiring");
+        do
+        {
+            yield return StartCoroutine(WaitForEvent());
+        } while (currentInteracted != "Stiring");
+        GameEvent.current.EnableRequest("Stiring");
         GameEvent.current.EnableRequest("BowlDyedSoda");
         //set aside
         TMPRecepieInstructions.text = "Add rock-shaped candy to the turtle bowl";

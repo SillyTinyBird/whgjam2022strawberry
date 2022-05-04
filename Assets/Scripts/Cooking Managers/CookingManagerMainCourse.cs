@@ -6,7 +6,6 @@ using UnityEngine;
 public class CookingManagerMainCourse : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI TMPRecepieInstructions;
-    private string lastInteracted;
     private string currentInteracted;
     private bool eventHappened;
 
@@ -14,9 +13,7 @@ public class CookingManagerMainCourse : MonoBehaviour
     void OnEvent(string name)
     {
         eventHappened = true;
-        lastInteracted = currentInteracted;
         currentInteracted = name;
-        Debug.Log(currentInteracted);
     }
 
     //Coroutine that waits until the flag is set
@@ -29,7 +26,6 @@ public class CookingManagerMainCourse : MonoBehaviour
     {
         GameEvent.current.OnIngredientPress += OnEvent;
         StartCoroutine("RecepieProcessor");
-        //stepRequirements.Add(
     }
 
     //steps
@@ -90,13 +86,13 @@ public class CookingManagerMainCourse : MonoBehaviour
         {
             yield return StartCoroutine(WaitForEvent());
         } while (currentInteracted != "Cucumber");
-        GameEvent.current.EnableRequest("WholeCucumber");
+        GameEvent.current.EnableRequest("Cutting");
         TMPRecepieInstructions.text = "Cut into round circles";
         do
         {
             yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Knife");
-        GameEvent.current.EnableRequest("WholeCucumber");
+        } while (currentInteracted != "Cutting");
+        GameEvent.current.EnableRequest("Cutting");
         GameEvent.current.EnableRequest("CucumberDone");
 
         TMPRecepieInstructions.text = "Grab knife, click on cream cheese to add it to knifes";

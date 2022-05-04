@@ -6,7 +6,6 @@ using TMPro;
 public class CookingManagerDessert : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI TMPRecepieInstructions;
-    private string lastInteracted;
     private string currentInteracted;
     bool eventHappened;
 
@@ -14,23 +13,19 @@ public class CookingManagerDessert : MonoBehaviour
     void OnEvent(string name)
     {
         eventHappened = true;
-        lastInteracted = currentInteracted;
         currentInteracted = name;
-        Debug.Log(currentInteracted);
     }
 
     //Coroutine that waits until the flag is set
     IEnumerator WaitForEvent()
     {
         yield return new WaitUntil(() => eventHappened == true);
-        Debug.Log("Requirements registered");
         eventHappened = false;
     }
     void Start()
     {
         GameEvent.current.OnIngredientPress += OnEvent;
         StartCoroutine("RecepieProcessor");
-        //stepRequirements.Add(
     }
     //steps
     private IEnumerator RecepieProcessor()
@@ -48,12 +43,15 @@ public class CookingManagerDessert : MonoBehaviour
         } while (currentInteracted != "BananaUnPeeled");
         GameEvent.current.EnableRequest("BananaUnPeeled");
         GameEvent.current.EnableRequest("BananaPeeled");
+        GameEvent.current.EnableRequest("StickBanana");
+        
         TMPRecepieInstructions.text = "Push stick into banana";
-        while (currentInteracted != "Stick")
+        while (currentInteracted != "StickBanana")
         {
             yield return StartCoroutine(WaitForEvent());
         }
         GameEvent.current.EnableRequest("BananaPeeled");
+        GameEvent.current.EnableRequest("StickBanana");
         GameEvent.current.EnableRequest("BananaStickDone");
         TMPRecepieInstructions.text = "Take caramel squares and put them in the pot to melt";
         do
