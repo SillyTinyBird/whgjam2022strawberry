@@ -6,6 +6,7 @@ public class EnableOnRequest : MonoBehaviour
 {
     BoxCollider2D boxCollider;
     SpriteRenderer spriteRenderer;
+    [SerializeField] AudioClip clip;
     void Start()
     {
         boxCollider = GetComponent<BoxCollider2D>();
@@ -22,6 +23,10 @@ public class EnableOnRequest : MonoBehaviour
         {
             spriteRenderer.enabled = !spriteRenderer.enabled;
             boxCollider.enabled = !boxCollider.enabled;
+            if(spriteRenderer.enabled && clip!= null)
+            {
+                AudioManager.instance.GetSFXAudioSource().PlayOneShot(clip);
+            }
         }
     }
 }

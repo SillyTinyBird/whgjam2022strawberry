@@ -26,6 +26,7 @@ public class BananaStickEnableOnRequest : MonoBehaviour
             }
             spriteRenderer.enabled = !spriteRenderer.enabled;
             transform.GetChild(0).gameObject.SetActive(!transform.GetChild(0).gameObject.activeSelf);
+            transform.GetChild(1).gameObject.SetActive(!transform.GetChild(1).gameObject.activeSelf);
         }
     }
 }

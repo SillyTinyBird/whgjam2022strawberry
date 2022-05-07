@@ -7,14 +7,39 @@ public class CookingManagerDrinks : MonoBehaviour
     [SerializeField] private TextMeshProUGUI TMPRecepieInstructions;
     private string currentInteracted;
     bool eventHappened;
-
+    [SerializeField] private AudioClip doneSFX;
+    private float pitch = 1;
+    #region function declaration
+    private IEnumerator WaitLoop(string name)
+    {
+        do
+        {
+            yield return StartCoroutine(WaitForEvent());
+        } while (currentInteracted != name);
+        PlayDoneSFX();
+    }
+    private void PlayDoneSFX()
+    {
+        if (doneSFX != null)
+        {
+            AudioSource audio = AudioManager.instance.GetSFXAudioSource();
+            pitch *= 1.05946f;
+            audio.pitch = pitch;
+            audio.PlayOneShot(doneSFX);
+            //audio.pitch = 1f;
+        }
+    }
+    private void ResetPitch()
+    {
+        if (doneSFX != null)
+            AudioManager.instance.GetSFXAudioSource().pitch = 1.0f;
+    }
     //Event subscriber that sets the flag
     void OnEvent(string name)
     {
         eventHappened = true;
         currentInteracted = name;
     }
-
     //Coroutine that waits until the flag is set
     IEnumerator WaitForEvent()
     {
@@ -26,104 +51,59 @@ public class CookingManagerDrinks : MonoBehaviour
         GameEvent.current.OnIngredientPress += OnEvent;
         StartCoroutine("RecepieProcessor");
     }
-    //steps
+    #endregion
+    #region steps of the recipe
     private IEnumerator RecepieProcessor()
     {
         TMPRecepieInstructions.text = "Start by pouring the soda into a bowl";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Soda");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "BowlEmpty");
+        yield return WaitLoop("Soda");//add reaction
+        yield return WaitLoop("BowlEmpty");
         GameEvent.current.EnableRequest("BowlSoda");
         GameEvent.current.EnableRequest("BowlEmpty");
         TMPRecepieInstructions.text = "Dye the soda blue";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "BlueDye");
+        yield return WaitLoop("BlueDye");
         GameEvent.current.EnableRequest("BowlSoda");
         GameEvent.current.EnableRequest("Stiring");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Stiring");
+        yield return WaitLoop("Stiring");
         GameEvent.current.EnableRequest("Stiring");
         GameEvent.current.EnableRequest("BowlDyedSoda");
-        //set aside
         TMPRecepieInstructions.text = "Add rock-shaped candy to the turtle bowl";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "RockCandy");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "TurtleBowlEmpty");
+        yield return WaitLoop("RockCandy");
+        yield return WaitLoop("TurtleBowlEmpty");
         GameEvent.current.EnableRequest("TurtleBowlEmpty");
         GameEvent.current.EnableRequest("TurtleBowlL1");
-
         TMPRecepieInstructions.text = "Add a layer of ice";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Ice");
+        yield return WaitLoop("Ice");
         GameEvent.current.EnableRequest("TurtleBowlL1");
         GameEvent.current.EnableRequest("TurtleBowlL2");
         TMPRecepieInstructions.text = "Add a layer of fish-shaped candy";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "FishCandy");
+        yield return WaitLoop("FishCandy");
         GameEvent.current.EnableRequest("TurtleBowlL2");
         GameEvent.current.EnableRequest("TurtleBowlL3");
-
-
         TMPRecepieInstructions.text = "Alternate between fish-shaped candy and ice until the bowl is full";
-
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Ice");
+        yield return WaitLoop("Ice");
         GameEvent.current.EnableRequest("TurtleBowlL3");
         GameEvent.current.EnableRequest("TurtleBowlL4");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "FishCandy");
+        yield return WaitLoop("FishCandy");
         GameEvent.current.EnableRequest("TurtleBowlL4");
         GameEvent.current.EnableRequest("TurtleBowlL5");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Ice");
+        yield return WaitLoop("Ice");
         GameEvent.current.EnableRequest("TurtleBowlL5");
         GameEvent.current.EnableRequest("TurtleBowlL6");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "FishCandy");
+        yield return WaitLoop("FishCandy");
         GameEvent.current.EnableRequest("TurtleBowlL6");
         GameEvent.current.EnableRequest("TurtleBowlL7");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Ice");
+        yield return WaitLoop("Ice");
         GameEvent.current.EnableRequest("TurtleBowlL7");
         GameEvent.current.EnableRequest("TurtleBowlL8");
-
         TMPRecepieInstructions.text = "Finally, pour the dyed soda into the fish bowl";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "BowlDyedSoda");
+        yield return WaitLoop("BowlDyedSoda");
         GameEvent.current.EnableRequest("BowlDyedSoda");
         GameEvent.current.EnableRequest("TurtleBowlL8");
         GameEvent.current.EnableRequest("TurtleBowlFinal");
         TMPRecepieInstructions.text = "Your dish is done!";
-        Debug.Log("Recepie done!");
+        ResetPitch();
+        ProgressTracker.instance.DrinksFinished();
     }
+    #endregion
 }

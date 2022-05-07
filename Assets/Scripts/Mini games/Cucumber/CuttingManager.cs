@@ -26,10 +26,12 @@ public class CuttingManager : MonoBehaviour
         sliceOrigin = transform.position;
         if(isActive)
         {
+            transform.GetChild(0).gameObject.SetActive(true);
             Activate();
         }
         else
         {
+            transform.GetChild(0).gameObject.SetActive(false);
             Deactivate();
         }
     }
@@ -50,8 +52,16 @@ public class CuttingManager : MonoBehaviour
             Input.mousePosition.x,
             Input.mousePosition.y,
             cam.nearClipPlane));
-    void Activate() => isActive = true;
-    void Deactivate() => isActive = false;
+    void Activate()
+    {
+        transform.GetChild(0).gameObject.SetActive(true);
+        isActive = true;
+    }
+    void Deactivate()
+    {
+        
+        isActive = false;
+    }
     void StartPosCheckOnMouseDown()
     {
         if (Input.GetMouseButtonDown(0))
@@ -79,6 +89,7 @@ public class CuttingManager : MonoBehaviour
             {
                 trackLineWithMouse = false;
                 lRend.enabled = false;
+                transform.GetChild(0).gameObject.SetActive(false);
                 StartCoroutine(EraseLine());
                 this.Deactivate();
                 if (nextCut != null)

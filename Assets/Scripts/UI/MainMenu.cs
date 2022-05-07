@@ -6,9 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public delegate void OnSceneLoaded();
+    /*public delegate void OnSceneLoaded();
     /// <summary>  Load the scene (using transitions) </summary>
-    public static event OnSceneLoaded LoadScene;
+    public static event OnSceneLoaded LoadScene;*/
 
     [Header("The parts of the main menu")]
     [SerializeField] private GameObject mainMenu;
@@ -19,7 +19,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private AudioMixer audioMixer;
 
     private void Awake() => DisableParts();
-    public void StartGame() => LoadScene();
+    public void StartGame() => SceneTransition.current.RequestLoadsceneWithId(1);
     public void Settings() => settingsMenu.SetActive(true);
     public void Credits() => creditsMenu.SetActive(true);
     public void GoBack() => DisableParts();

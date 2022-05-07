@@ -45,5 +45,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomIndex: 1
   image: {fileID: 0}
-  fadeSpeed: 2
+  fadeSpeed: 1
   transitionSpeed: 1

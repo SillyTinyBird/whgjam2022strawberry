@@ -8,20 +8,36 @@ using UnityEngine.Audio;
 public class SceneTransition : MonoBehaviour
 {
     [Header("Index of the game scene")] [Min(0)]
-    [SerializeField] private int roomIndex;
+    [SerializeField] private int roomIndex;//no longer needed 
     [Header("Transition image")]
     [SerializeField] Image image;
     [Header("Fade speed")] [Min(0)]
     [SerializeField] private float fadeSpeed;
     [Header("Transition speed (before it loads next level")] [Min(0)]
     [SerializeField] private float transitionSpeed;
+    public static SceneTransition current;
 
+    public delegate void OnSceneLoaded(int id);
+    /// <summary>  Load the scene (using transitions) </summary>
+    public static event OnSceneLoaded LoadSceneWithId;
 
-    private void Awake() => StopCoroutine();
-    private void OnEnable() => MainMenu.LoadScene += LoadScene;
-    private void OnDisable() => MainMenu.LoadScene -= LoadScene;
-    private void LoadScene() => StartCoroutine(LoadLevelCoroutine());
+    void Awake()
+    {
+        StopCoroutine();
+        current = this;//singleton kind of situation
+    }
+    private void OnEnable() => LoadSceneWithId += LoadScene;//removed hardcoded dependency (was dependent on MainMenu class)
+    private void OnDisable() => LoadSceneWithId -= LoadScene;
+    private void LoadScene(int id) => StartCoroutine(LoadLevelCoroutine(id));
     private void StopCoroutine() => StartCoroutine(StopLoadingCoroutine());
+
+    public void RequestLoadsceneWithId(int id)//call this (from current) to invoke transition
+    {
+        if (LoadSceneWithId != null)
+        {
+            LoadSceneWithId(id);
+        }
+    }
 
     #region IEnumerators
     //When the new scene is loaded, fade out the image
@@ -33,12 +49,12 @@ public class SceneTransition : MonoBehaviour
         image.raycastTarget = false;
     }
 
-    private IEnumerator LoadLevelCoroutine()
+    private IEnumerator LoadLevelCoroutine(int id)
     {
         image.raycastTarget = true;
         Fading.FadeIn(image, fadeSpeed);
         yield return new WaitForSeconds(transitionSpeed);
-        SceneManager.LoadScene(roomIndex);
+        SceneManager.LoadScene(id);
     }
     #endregion
 }

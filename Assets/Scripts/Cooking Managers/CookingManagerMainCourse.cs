@@ -8,14 +8,47 @@ public class CookingManagerMainCourse : MonoBehaviour
     [SerializeField] private TextMeshProUGUI TMPRecepieInstructions;
     private string currentInteracted;
     private bool eventHappened;
-
+    [SerializeField] private AudioClip doneSFX;
+    private float pitch = 1;
+    #region function declaration
+    private IEnumerator WaitLoop(string name)
+    {
+        do
+        {
+            yield return StartCoroutine(WaitForEvent());
+        } while (currentInteracted != name);
+        PlayDoneSFX();
+    }
+    private IEnumerator WaitLoop(string name1, string name2)
+    {
+        do
+        {
+            yield return StartCoroutine(WaitForEvent());
+        } while (currentInteracted != name1 && currentInteracted != name2);
+        PlayDoneSFX();
+    }
+    private void PlayDoneSFX()
+    {
+        if (doneSFX != null)
+        {
+            AudioSource audio = AudioManager.instance.GetSFXAudioSource();
+            pitch *= 1.05946f;
+            audio.pitch = pitch;
+            audio.PlayOneShot(doneSFX);
+            //audio.pitch = 1f;
+        }
+    }
+    private void ResetPitch()
+    {
+        if (doneSFX != null)
+            AudioManager.instance.GetSFXAudioSource().pitch = 1.0f;
+    }
     //Event subscriber that sets the flag
     void OnEvent(string name)
     {
         eventHappened = true;
         currentInteracted = name;
     }
-
     //Coroutine that waits until the flag is set
     IEnumerator WaitForEvent()
     {
@@ -27,126 +60,71 @@ public class CookingManagerMainCourse : MonoBehaviour
         GameEvent.current.OnIngredientPress += OnEvent;
         StartCoroutine("RecepieProcessor");
     }
-
-    //steps
-    private IEnumerator RecepieProcessor()
+    #endregion
+    #region steps of the recipe
+    private IEnumerator RecepieProcessor()//for waiting/calling events
     {
         TMPRecepieInstructions.text = "Start by grabing two slices of bread";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Bread");
+        yield return WaitLoop("Bread");
         GameEvent.current.EnableRequest("SliceBread1");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Bread");
+        yield return WaitLoop("Bread");
         GameEvent.current.EnableRequest("SliceBread2");
         TMPRecepieInstructions.text = "Use cookie cutter to cut both slices of bread into cat shape";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Cutter");
+        yield return WaitLoop("Cutter");
         GameEvent.current.EnableRequest("SliceBread1");
         GameEvent.current.EnableRequest("SliceBread2");
         GameEvent.current.EnableRequest("BreadDone1");
         GameEvent.current.EnableRequest("BreadDone2");
-
         TMPRecepieInstructions.text = "Grab slice of ham";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Ham");
+        yield return WaitLoop("Ham");
         GameEvent.current.EnableRequest("SliceHam");
-        //etc
         TMPRecepieInstructions.text = "Use cookie cutter to cut ham into cat shape";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Cutter");
+        yield return WaitLoop("Cutter");
         GameEvent.current.EnableRequest("SliceHam");
         GameEvent.current.EnableRequest("HamDone");
-
         TMPRecepieInstructions.text = "Grab slice of cheese";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Cheese");
+        yield return WaitLoop("Cheese");
         GameEvent.current.EnableRequest("SliceCheese");
         TMPRecepieInstructions.text = "Use cookie cutter to cut cheese into cat shape";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Cutter");
+        yield return WaitLoop("Cutter");
         GameEvent.current.EnableRequest("SliceCheese");
         GameEvent.current.EnableRequest("CheeseDone");
-
         TMPRecepieInstructions.text = "Grab whole cucumber";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Cucumber");
+        yield return WaitLoop("Cucumber");
         GameEvent.current.EnableRequest("Cutting");
         TMPRecepieInstructions.text = "Cut into round circles";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Cutting");
+        yield return WaitLoop("Cutting");
         GameEvent.current.EnableRequest("Cutting");
         GameEvent.current.EnableRequest("CucumberDone");
-
         TMPRecepieInstructions.text = "Grab knife, click on cream cheese to add it to knifes";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Knife");
+        yield return WaitLoop("Knife");
         GameEvent.current.EnableRequest("KnifeGrab");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "Cream");
+        yield return WaitLoop("Cream");
         GameEvent.current.EnableRequest("KnifeGrab");
         GameEvent.current.EnableRequest("KnifeCream");
-        
         GameEvent.current.EnableRequest("BreadDone1");
         GameEvent.current.EnableRequest("SliceBreadCream");
         TMPRecepieInstructions.text = "Spread cream cheese onto one slice of bread";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "SliceBreadCream");
+        yield return WaitLoop("SliceBreadCream");
         GameEvent.current.EnableRequest("KnifeCream");
         GameEvent.current.EnableRequest("SliceBreadCream");
         GameEvent.current.EnableRequest("BreadDoneCream");
-        //here is spreading cream phase
-        TMPRecepieInstructions.text = "Assemble your sandwich in this order; bread, cheese, ham, cucumber, top bread";
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "BreadDone2" && currentInteracted != "BreadDoneCream");
+        TMPRecepieInstructions.text = "Assemble your sandwich in this order; bread, cheese, ham, cucumber, top bread";//visualizing this probs would look cool but no time 
+        yield return WaitLoop("BreadDone2","BreadDoneCream");
         GameEvent.current.EnableRequest("BreadDoneCream");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "CheeseDone");
+        yield return WaitLoop("CheeseDone");
         GameEvent.current.EnableRequest("CheeseDone");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "HamDone");
+        yield return WaitLoop("HamDone");
         GameEvent.current.EnableRequest("HamDone");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "CucumberDone");
+        yield return WaitLoop("CucumberDone");
         GameEvent.current.EnableRequest("CucumberDone");
-        do
-        {
-            yield return StartCoroutine(WaitForEvent());
-        } while (currentInteracted != "BreadDone2" && currentInteracted != "BreadDoneCream");
+        yield return WaitLoop("BreadDone2", "BreadDoneCream");
         GameEvent.current.EnableRequest("BreadDone2");
         GameEvent.current.EnableRequest("Sandwich");
         TMPRecepieInstructions.text = "Your dish is done!";
-        Debug.Log("Recepie done!");
+        ResetPitch();
+        ProgressTracker.instance.MainCourseFinished();
+        //GameObject.Find("DishChecker").GetComponent<DishButtons>().DishFinished("MainCourse");
     }
+    #endregion
 }
